@@ -1,4 +1,4 @@
-<mat-accordion>
+<mat-accordion *ngIf="livros.length > 0">
 
   <mat-expansion-panel *ngFor="let livro of livros">
 
@@ -10,11 +10,15 @@
     <p>Autor: {{ livro.autor }} </p>
     <p>Páginas: {{ livro.numeroPaginas }} </p>
 
+    <mat-action-row>
+      <button mat-button color="warn">EDITAR</button>
+      <button mat-button color="warn">REMOVER</button>
+    </mat-action-row>
   </mat-expansion-panel>
 
 
 </mat-accordion>
 
-<p *ngIf="livros.length <= 0">
+<p class="mat-body-1" *ngIf="livros.length <= 0">
   Nenhum livro cadastrado!
 </p>
