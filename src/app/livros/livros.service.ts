@@ -1,37 +1,54 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Livro } from './livros.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LivroService {
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
+
   private listaLivrosAtualizada = new Subject<Livro[]>();
 
-  private livros: Livro [] = [
-    {
-      id: '9999999',
-      titulo: 'O Senhor dos Anéis',
-      autor: 'J.R.R Tolkien',
-      numeroPaginas: 'Todas'
-    }
-  ];
+  private livros: Livro [] = [];
 
-  getLivros(): Livro[] {
-    return [...this.livros];
+  getLivros(): void {
+    this.httpClient.get
+      <
+        {
+          mensagem: string,
+          livros: Livro[]
+        }
+      >
+      ('http://localhost:3000/api/livros')
+      .subscribe(
+        (dados) => {
+            this.livros = dados.livros;
+            this.listaLivrosAtualizada.next([...this.livros]);
+        }
+      )
   }
 
-  adicionarLivro (id: string, titulo: string, autor: string, numeroPaginas: string): void{
+  adicionarLivro (id: string, titulo: string, autor: string, paginas: string): void{
     const livro: Livro = {
       id: id,
       titulo: titulo,
       autor: autor,
-      numeroPaginas:numeroPaginas
+      paginas: paginas
     };
-    this.livros.push(livro);
-    this.listaLivrosAtualizada.next([...this.livros]);
+
+    this.httpClient.post
+          <{mensagem: string}>
+          ('http://localhost:3000/api/livros', livro)
+          .subscribe(
+            (dados) => {
+              console.log(dados.mensagem);
+              this.livros.push(livro);
+              this.listaLivrosAtualizada.next([...this.livros]);
+            }
+          );
   }
 
     getListaDeLivrosAtualizadaObservable() {

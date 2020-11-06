@@ -20,7 +20,7 @@ export class InserirLivrosComponent {
       form.value.id,
       form.value.titulo,
       form.value.autor,
-      form.value.numeroPaginas
+      form.value.paginas
     );
     form.resetForm();
   }
